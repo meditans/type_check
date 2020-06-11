@@ -144,6 +144,7 @@
 %   * type classes
 %
 % CHANGES:
+%   * fixed singleton warning for polymorphic sum datatypes
 %   * added cmp/0 type
 %   * added compare/3 built-in
 %   * added statistics printing at end of type checking
@@ -1061,7 +1062,11 @@ user:term_expansion((:- type Name ---> Constructors),
              Clauses
             ) :-
     ( \+ \+ ( numbervars(Name, 0, _), ground(Constructors) ) ->
-        phrase(constructor_clauses(Constructors,Name), Clauses)
+        % We need to freshen the variables, because we want to decouple the
+        % variables in our source code from the ones in the generated code (not
+        % doing this still works, but generates singleton variable warnings).
+        copy_term(Name-Constructors, FName-FConstructors),
+        phrase(constructor_clauses(FConstructors,FName), Clauses)
     ;
         format("ERROR: invalid TYPE definition~w\n\tType definitions must be range-restricted!\n", [(:- type Name ---> Constructors)]),
         Clauses = []
