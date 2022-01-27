@@ -161,6 +161,7 @@ where Options is a list containing zero or more of the following elements:
 
 ## Changes since initial version
 
+* fixed singleton warning for polymorphic sum datatypes
 * added cmp/0 type
 * added compare/3 built-in
 * added statistics printing at end of type checking
